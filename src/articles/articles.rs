@@ -5,11 +5,19 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::{self};
-
 use crate::articles::models::{CreateArticleBody, Article, UpdateArticleBody};
 
-
-
+#[utoipa::path(
+    request_body = CreateArticleBody,
+    responses(
+        (status = 200, description = "Create an article", body = CreateArticleBody),
+        (status = 401, description = "Unauthorized."),
+        (status = 500, description = "Internal server error.")
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 #[post("/article")]
 async fn create_article(
     state: Data<AppState>,
@@ -39,7 +47,16 @@ async fn create_article(
     }
 }
 
-
+#[utoipa::path(
+    responses(
+        (status = 200, description = "get all articles", body = Article),
+        (status = 401, description = "Unauthorized."),
+        (status = 500, description = "Internal server error.")
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 #[get("/article/{id}")]
 async fn get_article(
     state: Data<AppState>,
@@ -60,7 +77,16 @@ async fn get_article(
     }
 }
 
-
+#[utoipa::path(
+    responses(
+        (status = 200, description = "get an articles", body = Article),
+        (status = 401, description = "Unauthorized."),
+        (status = 500, description = "Internal server error.")
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 #[get("/articles")]
 async fn get_all_articles(
     state: Data<AppState>,
@@ -76,7 +102,17 @@ async fn get_all_articles(
     }
 }
 
-
+#[utoipa::path(
+    request_body = Article,
+    responses(
+        (status = 200, description = "Delete an article", body = Article),
+        (status = 401, description = "Unauthorized."),
+        (status = 500, description = "Internal server error.")
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 #[delete("/article/{id}")]
 async fn delete_article(
     state: Data<AppState>,
@@ -117,7 +153,17 @@ async fn delete_article(
     }
 }
 
-
+#[utoipa::path(
+    request_body = UpdateArticleBody,
+    responses(
+        (status = 200, description = "Update an article's title", body = UpdateArticleBody),
+        (status = 401, description = "Unauthorized."),
+        (status = 500, description = "Internal server error.")
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 #[put("/article/{id}/title")]
 async fn update_article_title(
     state: Data<AppState>,
@@ -170,7 +216,17 @@ async fn update_article_title(
     }
 }
 
-
+#[utoipa::path(
+    request_body = UpdateArticleBody,
+    responses(
+        (status = 200, description = "Update an article's content", body = UpdateArticleBody),
+        (status = 401, description = "Unauthorized."),
+        (status = 500, description = "Internal server error.")
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 #[put("/article/{id}/content")]
 async fn update_article_content(
     state: Data<AppState>,

@@ -1,16 +1,19 @@
 use serde::{Deserialize, Serialize};
 use sqlx::{self, FromRow};
 use chrono::NaiveDateTime;
+use utoipa::ToSchema;
 
 
 
-#[derive(Deserialize)]
+#[derive(Deserialize, ToSchema)]
 pub struct CreateArticleBody {
+    #[schema(example="title", required=true)]
     pub title: String,
+    #[schema(example="content", required=true)]
     pub content: String,
 }
 
-#[derive(Serialize, FromRow)]
+#[derive(Serialize, FromRow, ToSchema)]
 pub struct Article {
    pub id: i32,
    pub title: String,
@@ -20,8 +23,10 @@ pub struct Article {
 }
 
 
-#[derive(Deserialize)]
+#[derive(Deserialize, ToSchema)]
 pub struct UpdateArticleBody {
+    #[schema(example="title", required=true)]
     pub title: Option<String>,
+    #[schema(example="content", required=true)]
     pub content: Option<String>,
 }

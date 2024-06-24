@@ -13,6 +13,13 @@ use regex::Regex;
 use sha2::Sha256;
 use sqlx::{self, Error as SqlxError};
 
+#[utoipa::path(
+    request_body = CreateUserBody,
+    responses(
+        (status = 200, description = "Create a new user", body = UserNoPassword),
+        (status = 500, description = "Internal server error.")
+    )
+)]
 #[post("/register")]
 async fn register(state: Data<AppState>, body: Json<CreateUserBody>) -> impl Responder {
     let user = body.into_inner();
@@ -62,6 +69,16 @@ async fn register(state: Data<AppState>, body: Json<CreateUserBody>) -> impl Res
     }
 }
 
+#[utoipa::path(
+    responses(
+        (status = 200, description = "Login as a user", body = TokenClaims),
+        (status = 401, description = "Unauthorized."),
+        (status = 500, description = "Internal server error.")
+    ),
+    security(
+        ("login" = [])
+    )
+)]
 #[get("/login")]
 async fn login(state: Data<AppState>, credentials: BasicAuth) -> impl Responder {
     let jwt_secret: Hmac<Sha256> = Hmac::new_from_slice(
@@ -104,6 +121,17 @@ async fn login(state: Data<AppState>, credentials: BasicAuth) -> impl Responder 
     }
 }
 
+#[utoipa::path(
+    request_body = UpdateUserBody,
+    responses(
+        (status = 200, description = "Update a user's username", body = UpdateUserBody),
+        (status = 401, description = "Unauthorized."),
+        (status = 500, description = "Internal server error.")
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 #[put("/user/{id}/username")]
 async fn update_username(
     state: web::Data<AppState>,
@@ -150,6 +178,17 @@ async fn update_username(
     }
 }
 
+#[utoipa::path(
+    request_body = UpdateUserBody,
+    responses(
+        (status = 200, description = "Update a user's email", body = UpdateUserBody),
+        (status = 401, description = "Unauthorized."),
+        (status = 500, description = "Internal server error.")
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 #[put("/user/{id}/email")]
 async fn update_email(
     state: Data<AppState>,
@@ -201,6 +240,17 @@ async fn update_email(
     }
 }
 
+#[utoipa::path(
+    request_body = UpdateUserBody,
+    responses(
+        (status = 200, description = "Update a user's password", body = UpdateUserBody),
+        (status = 401, description = "Unauthorized."),
+        (status = 500, description = "Internal server error.")
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 #[put("/user/{id}/password")]
 async fn update_password(
     state: Data<AppState>,
